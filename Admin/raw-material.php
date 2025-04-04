@@ -79,11 +79,6 @@ if ($_SESSION["role"] !== 'super_admin') {
             /* Prevents wrapping of the phone number */
         }
 
-        th {
-            background-color: #f4f4f4;
-            height: 60px;
-        }
-
         .control {
             display: flex;
         }
@@ -125,6 +120,7 @@ if ($_SESSION["role"] !== 'super_admin') {
             width: 100%;
             gap: 10%;
             display: flex;
+            margin-left: -2%;
         }
 
         .navi {
@@ -246,7 +242,7 @@ if ($_SESSION["role"] !== 'super_admin') {
             align-items: center;
             font-size: 14px;
             height: 40px;
-            margin-left: 545px;
+            margin-left: 36%;
             margin-top: 15px;
         }
 
@@ -310,7 +306,7 @@ if ($_SESSION["role"] !== 'super_admin') {
 
         th {
             background-color: #f8f9fa;
-            text-align: left;
+            text-align: center;
             padding: 12px 20px;
             font-weight: bold;
             color: #333;
@@ -434,7 +430,7 @@ if ($_SESSION["role"] !== 'super_admin') {
         }
 
         .submit-btn {
-            background-color: #3d7cf9;
+            background-color:rgb(238, 151, 21);
             color: white;
             border: none;
             border-radius: 4px;
@@ -502,7 +498,6 @@ if ($_SESSION["role"] !== 'super_admin') {
                         <tr>
                             <th>Supplier Name</th>
                             <th>Item Name</th>
-                            <th>Payment</th>
                             <th>Status</th>
                             <th>Remarks</th>
                         </tr>
@@ -563,7 +558,7 @@ if ($_SESSION["role"] !== 'super_admin') {
             </div>
         </div>
     </div>
-    <div id="orderModal" class="modal">
+    <div id="orderModal-purchase" class="modal">
         <div class="modal-content">
             <span class="close">&times;</span>
             <h2>Order Form</h2>
@@ -582,6 +577,39 @@ if ($_SESSION["role"] !== 'super_admin') {
                 <div class="form-row">
                     <div class="form-group">
                         <label for="item">Item</label>
+                        <input type="text" id="item" name="item" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="quantity">Quantity</label>
+                        <input type="tel" id="quantity" name="quantity" required>
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="submit-btn">Submit <span class="arrow">→</span></button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div id="orderModal-sales" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Add New Materials</h2>
+            <form id="salesOrderForm">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="fullName">Item Name</label>
+                        <input type="text" id="fullName" name="fullName" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="company">Item Code</label>
+                        <input type="text" id="company" name="company" required>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="item">Color Code</label>
                         <input type="text" id="item" name="item" required>
                     </div>
                     <div class="form-group">
@@ -772,9 +800,6 @@ if ($_SESSION["role"] !== 'super_admin') {
             document.getElementById("inventoryTable").style.display = "table";
             document.getElementById("purchaseOrderSection").style.display = "none";
 
-            document.getElementById("statusFilter").style.display = "none";
-            document.getElementById("newOrderBtn").style.display = "none";
-
             document.getElementById("salesOrderTab").classList.add("active-tab");
             document.getElementById("purchaseOrderTab").classList.remove("active-tab");
         }
@@ -784,27 +809,72 @@ if ($_SESSION["role"] !== 'super_admin') {
             document.getElementById("purchaseOrderSection").style.display = "block";
 
             document.getElementById("statusFilter").style.display = "block";
-            document.getElementById("newOrderBtn").style.display = "block";
 
             document.getElementById("salesOrderTab").classList.remove("active-tab");
             document.getElementById("purchaseOrderTab").classList.add("active-tab");
         }
 
-        const modal = document.getElementById("orderModal");
-        const closeModalButton = document.querySelector(".modal .close");
+        // Get modal elements
+        const salesModal = document.getElementById("orderModal-sales");
+        const purchaseModal = document.getElementById("orderModal-purchase");
 
+        // Get close button for each modal
+        const closeSalesModal = salesModal.querySelector(".close");
+        const closePurchaseModal = purchaseModal.querySelector(".close");
+
+        // Show the modal based on the active tab
         document.getElementById("newOrderBtn").addEventListener("click", function() {
-            modal.style.display = "block";
-        });
-
-        closeModalButton.addEventListener("click", function() {
-            modal.style.display = "none";
-        });
-
-        window.addEventListener("click", function(event) {
-            if (event.target === modal) {
-                modal.style.display = "none";
+            if (document.getElementById("salesOrderTab").classList.contains("active-tab")) {
+                // Show Sales Order modal
+                salesModal.style.display = "block";
+            } else if (document.getElementById("purchaseOrderTab").classList.contains("active-tab")) {
+                // Show Purchase Order modal
+                purchaseModal.style.display = "block";
             }
+        });
+
+        // Close modals when the close button is clicked
+        closeSalesModal.addEventListener("click", function() {
+            salesModal.style.display = "none";
+        });
+
+        closePurchaseModal.addEventListener("click", function() {
+            purchaseModal.style.display = "none";
+        });
+
+        // Close modals if the user clicks outside of the modal
+        window.addEventListener("click", function(event) {
+            if (event.target === salesModal) {
+                salesModal.style.display = "none";
+            } else if (event.target === purchaseModal) {
+                purchaseModal.style.display = "none";
+            }
+        });
+
+        // Function to update the button text based on the active tab
+        function updateButtonText() {
+            const newOrderBtn = document.getElementById("newOrderBtn");
+
+            // Check if Sales Order tab is active
+            if (document.getElementById("salesOrderTab").classList.contains("active-tab")) {
+                newOrderBtn.innerHTML = '<span style="font-size: 18px;">+ </span> New Materials'; // Change text to "New Item"
+            } else if (document.getElementById("purchaseOrderTab").classList.contains("active-tab")) {
+                newOrderBtn.innerHTML = '<span style="font-size: 18px;">+</span> New Order'; // Keep it as "New Order"
+            }
+        }
+
+        // Update the button text when the page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            updateButtonText();
+        });
+
+        // Also call this function when switching tabs to ensure the button text updates dynamically
+        document.getElementById("salesOrderTab").addEventListener("click", function() {
+            updateButtonText();
+        });
+
+        document.getElementById("purchaseOrderTab").addEventListener("click", function() {
+            updateButtonText();
         });
     </script>
     <?php include "includes/script.php"; ?>

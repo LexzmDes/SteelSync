@@ -343,6 +343,105 @@ if ($_SESSION["role"] !== 'super_admin') {
             padding: 15px;
         }
 
+        .modal {
+            display: none;
+            /* Hidden by default */
+            position: fixed;
+            z-index: 100000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+
+        /* Modal Content */
+        .modal-content {
+            background-color: #fff;
+            margin: 10% auto;
+            padding: 20px;
+            border-radius: 8px;
+            width: 100%;
+            max-width: 1000px;
+        }
+
+        /* Close Button */
+        .close {
+            color: #aaa;
+            font-size: 28px;
+            font-weight: bold;
+            position: absolute;
+            top: 10px;
+            right: 15px;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        /* Form Styling */
+        .form-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .form-group {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        input,
+        select {
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            background-color:rgb(230, 178, 81);
+            color: white;
+            font-size: 16px;
+        }
+
+        button.cancel-btn {
+            background-color: #f44336;
+        }
+
+        button:hover {
+            opacity: 0.8;
+        }
+
+        /* Form Actions */
+        .form-actions {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 600px) {
+            .form-row {
+                flex-direction: column;
+            }
+        }
+
+
         /**dito mo lagay yung css ng point of sale content yung css sa taas default yan format ng main--content wag mo aalisin*/
     </style>
     </style>
@@ -391,7 +490,7 @@ if ($_SESSION["role"] !== 'super_admin') {
                     </div>
                 </div>
 
-                <button class="new-order-btn">
+                <button class="new-order-btn" id="openOrderModalBtn">
                     <i class="ri-add-line"></i> NEW ORDER
                 </button>
             </div>
@@ -514,6 +613,73 @@ if ($_SESSION["role"] !== 'super_admin') {
             </div>
         </div>
     </div>
+    <div id="orderModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Create New Order</h2>
+            <form id="orderForm">
+                <!-- Customer Information -->
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="customerName">Customer Name</label>
+                        <input type="text" id="customerName" name="customerName" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="contactNumber">Contact Number</label>
+                        <input type="text" id="contactNumber" name="contactNumber">
+                    </div>
+                </div>
+
+                <!-- Item Information -->
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="item">Services</label>
+                        <select id="item" name="item" required>
+                            <option value="item1">Gate 1</option>
+                            <option value="item2">Gate 2</option>
+                            <option value="item3">Gate 4</option>
+                            <option value="item3">Gate 5</option>
+                            <option value="item3">Gate 6</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="quantity">Quantity</label>
+                        <input type="number" id="quantity" name="quantity" required>
+                    </div>
+                </div>
+
+                <!-- Order Summary -->
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="totalAmount">Total Amount</label>
+                        <input type="text" id="totalAmount" name="totalAmount" readonly>
+                    </div>
+                </div>
+
+                <!-- Payment Information -->
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="paymentMethod">Payment Method</label>
+                        <select id="paymentMethod" name="paymentMethod">
+                            <option value="cash">Cash</option>
+                            <option value="credit">Credit Card</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="amountPaid">Amount Paid</label>
+                        <input type="number" id="amountPaid" name="amountPaid" required>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="form-actions">
+                    <button type="submit" class="submit-btn">Complete Order</button>
+                    <button type="button" class="cancel-btn" id="cancelBtn">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
 
     <script>
         /**dito mo lagay yung js ng point of sale content */
@@ -588,7 +754,81 @@ if ($_SESSION["role"] !== 'super_admin') {
                 statNumbers[2].textContent = completeOrders;
             }
         }
+        const modal = document.getElementById("orderModal");
+        const closeBtn = document.querySelector(".close");
+        const cancelBtn = document.getElementById("cancelBtn");
+        const orderForm = document.getElementById("orderForm");
+
+        // Get the button to open the modal
+        const openOrderModalBtn = document.getElementById("openOrderModalBtn");
+
+        // Function to open modal
+        function openModal() {
+            modal.style.display = "block";
+        }
+
+        // Function to close modal
+        function closeModal() {
+            modal.style.display = "none";
+        }
+
+        // Open modal when the button is clicked
+        openOrderModalBtn.addEventListener("click", openModal);
+
+        // Close the modal when clicking on the close button or cancel button
+        closeBtn.addEventListener("click", closeModal);
+        cancelBtn.addEventListener("click", closeModal);
+
+        // Close the modal if user clicks outside of the modal
+        window.addEventListener("click", (event) => {
+            if (event.target === modal) {
+                closeModal();
+            }
+        });
+
+        // Calculate total amount when item or quantity changes
+        document.getElementById("item").addEventListener("change", updateTotalAmount);
+        document.getElementById("quantity").addEventListener("input", updateTotalAmount);
+
+        function updateTotalAmount() {
+            const item = document.getElementById("item").value;
+            const quantity = document.getElementById("quantity").value;
+            let price = 0;
+
+            // Price based on the selected item (example prices)
+            switch (item) {
+                case "item1":
+                    price = 10;
+                    break;
+                case "item2":
+                    price = 20;
+                    break;
+                case "item3":
+                    price = 30;
+                    break;
+            }
+
+            // Update total amount
+            const totalAmount = price * quantity;
+            document.getElementById("totalAmount").value = totalAmount;
+        }
+
+        // Handle form submission
+        orderForm.addEventListener("submit", function(event) {
+            event.preventDefault(); // Prevent form submission
+
+            const amountPaid = document.getElementById("amountPaid").value;
+            const totalAmount = document.getElementById("totalAmount").value;
+
+            if (Number(amountPaid) < Number(totalAmount)) {
+                alert("Amount paid cannot be less than the total amount.");
+            } else {
+                alert("Order successfully created!");
+                closeModal(); // Close modal after order is placed
+            }
+        });
     </script>
+
     </script>
     <?php include "includes/script.php"; ?>
 </body>

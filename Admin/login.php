@@ -1,12 +1,6 @@
 <?php
 session_start();
 
-// Force HTTPS in production
-if (empty($_SERVER['HTTPS']) && $_SERVER['HTTP_HOST'] != 'localhost') {
-    header("Location: https://" . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']);
-    exit();
-}
-
 // If user is already logged in, redirect to their respective dashboard
 if (isset($_SESSION["user"])) {
     redirectBasedOnRole($_SESSION["role"]);
@@ -59,20 +53,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $stmt->bind_result($user_id, $hashed_password, $role);
         $stmt->fetch();
 
-        // First try modern password verification
-        if (password_verify($password, $hashed_password)) {
-            // Check if password needs rehashing (if algorithm changes in future)
-            if (password_needs_rehash($hashed_password, PASSWORD_BCRYPT)) {
-                $new_hash = password_hash($password, PASSWORD_BCRYPT);
-                $update_stmt = $conn->prepare("UPDATE users SET password = ? WHERE id = ?");
-                $update_stmt->bind_param("si", $new_hash, $user_id);
-                $update_stmt->execute();
-                $update_stmt->close();
-            }
-
-            // Regenerate session ID to prevent session fixation
-            session_regenerate_id(true);
-
+        if (md5($password) === $hashed_password) {
             $_SESSION["user"] = $username;
             $_SESSION["user_id"] = $user_id;
             $_SESSION["role"] = $role;
@@ -80,25 +61,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             // Update last login for the specific role
             updateLastLogin($conn, $user_id, $role);
 
-            redirectBasedOnRole($role);
-        }
-        // Legacy MD5 support (remove after migration is complete)
-        elseif (md5($password) === $hashed_password) {
-            // Upgrade to bcrypt
-            $new_hash = password_hash($password, PASSWORD_BCRYPT);
-            $update_stmt = $conn->prepare("UPDATE users SET password = ? WHERE id = ?");
-            $update_stmt->bind_param("si", $new_hash, $user_id);
-            $update_stmt->execute();
-            $update_stmt->close();
-
-            // Regenerate session ID to prevent session fixation
-            session_regenerate_id(true);
-
-            $_SESSION["user"] = $username;
-            $_SESSION["user_id"] = $user_id;
-            $_SESSION["role"] = $role;
-
-            updateLastLogin($conn, $user_id, $role);
             redirectBasedOnRole($role);
         } else {
             $error = "Invalid username or password";
@@ -186,7 +148,7 @@ $conn->close();
 
             <button type="submit">Login</button>
         </form>
-        <a href="forgot_passowrd.php" class="forgot-password">Forgot Password?</a>
+        <a href="#" class="forgot-password">Forgot Password?</a>
     </div>
 </body>
 

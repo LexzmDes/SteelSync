@@ -189,6 +189,146 @@ if ($_SESSION["role"] !== 'super_admin') {
             outline: 2px solid #4d90fe;
             background-color: #fff;
         }
+
+        .new-btn {
+            padding: 8px 15px;
+            background-color: #e91e63;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            font-size: 14px;
+            height: 40px;
+            margin-left: 124%;
+            white-space: nowrap;
+        }
+
+        /* Modal Background */
+        .modal {
+            display: none;
+            /* Hidden by default */
+            position: fixed;
+            /* Stay in place */
+            z-index: 11111;
+            /* Sit on top */
+            left: 0;
+            top: 0;
+            width: 100%;
+            /* Full width */
+            height: 100%;
+            /* Full height */
+            background-color: rgba(0, 0, 0, 0.4);
+            /* Black with opacity */
+            overflow: auto;
+            /* Enable scrolling if needed */
+            padding-top: 60px;
+        }
+
+        /* Modal Content */
+        .modal-content {
+            background-color: #fff;
+            margin: 5% auto;
+            /* Center the modal */
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            /* Adjust width as necessary */
+            max-width: 600px;
+            border-radius: 8px;
+            /* Rounded corners */
+        }
+
+        /* Close Button (×) */
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        /* Title */
+        h2 {
+            margin-top: 0;
+            color: #333;
+        }
+
+        /* Form styling */
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-row {
+            display: flex;
+            margin-bottom: 15px;
+            justify-content: space-between;
+        }
+
+        .form-group {
+            width: 48%;
+            /* Adjust width for side-by-side inputs */
+        }
+
+        .form-group label {
+            font-weight: bold;
+            margin-bottom: 5px;
+            font-size: 14px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 8px;
+            margin: 5px 0;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        .form-actions {
+            margin-top: 15px;
+            text-align: center;
+        }
+
+        /* Submit button */
+        .submit-btn {
+            background-color:rgb(211, 132, 15);
+            color: white;
+            border: none;
+            padding: 12px;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 4px;
+            margin-left: 80%;
+        }
+
+        .submit-btn .arrow {
+            margin-left: 8px;
+        }
+
+        .submit-btn:hover {
+            background-color:rgb(221, 160, 45);
+        }
+
+        /* Optional: Add responsive styling for smaller screens */
+        @media screen and (max-width: 600px) {
+            .form-row {
+                flex-direction: column;
+            }
+
+            .form-group {
+                width: 100%;
+            }
+        }
     </style>
 </head>
 
@@ -209,6 +349,9 @@ if ($_SESSION["role"] !== 'super_admin') {
                     <option value="vehicles">Vehicles</option>
                     <option value="machines">Machines</option>
                 </select>
+                <button class="new-btn" id="newOrderBtn">
+                    <span style="font-size: 18px;">+</span> New Order
+                </button>
             </div>
 
             <table class="inventory-table">
@@ -231,6 +374,40 @@ if ($_SESSION["role"] !== 'super_admin') {
             </div>
         </div>
     </div>
+    <div id="orderModal-sales" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Add New Materials</h2><br><br>
+            <form id="materialsOrderForm">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="itemName">Item Name</label>
+                        <input type="text" id="itemName" name="itemName" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="itemCode">Item Code</label>
+                        <input type="text" id="itemCode" name="itemCode" required>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="colorCode">Color Code</label>
+                        <input type="text" id="colorCode" name="colorCode" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="quantity">Quantity</label>
+                        <input type="number" id="quantity" name="quantity" required>
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="submit-btn">Submit <span class="arrow">→</span></button>
+                </div>
+            </form>
+        </div>
+    </div>
+
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
@@ -403,6 +580,57 @@ if ($_SESSION["role"] !== 'super_admin') {
 
             // Initial population of the table
             filterInventory();
+        });
+
+        // Get references to the modal, open button, and close button
+        const modalSales = document.getElementById("orderModal-sales");
+        const closeModalButton = modalSales.querySelector(".close");
+        const newOrderBtn = document.getElementById("newOrderBtn"); // Assuming this is the button for new materials
+
+        // When the "New Order" button is clicked, open the modal
+        newOrderBtn.addEventListener("click", function() {
+            modalSales.style.display = "block";
+        });
+
+        // When the close button (×) is clicked, close the modal
+        closeModalButton.addEventListener("click", function() {
+            modalSales.style.display = "none";
+        });
+
+        // When clicking anywhere outside the modal, close the modal
+        window.addEventListener("click", function(event) {
+            if (event.target === modalSales) {
+                modalSales.style.display = "none";
+            }
+        });
+
+        // Handle form submission for adding new materials
+        const materialsOrderForm = document.getElementById("materialsOrderForm");
+        materialsOrderForm.addEventListener("submit", function(event) {
+            event.preventDefault(); // Prevent the default form submission
+
+            // Get the form values
+            const itemName = document.getElementById("itemName").value;
+            const itemCode = document.getElementById("itemCode").value;
+            const colorCode = document.getElementById("colorCode").value;
+            const quantity = document.getElementById("quantity").value;
+
+            // Simple validation (you can expand it)
+            if (itemName && itemCode && colorCode && quantity) {
+                // Here you can add the logic for what happens when the form is submitted
+                // For example, you could send the data to the server or update the inventory list
+
+                console.log("New Material Added:");
+                console.log(`Item Name: ${itemName}, Item Code: ${itemCode}, Color Code: ${colorCode}, Quantity: ${quantity}`);
+
+                // Close the modal after form submission
+                modalSales.style.display = "none";
+
+                // Optionally, reset the form
+                materialsOrderForm.reset();
+            } else {
+                alert("Please fill in all fields.");
+            }
         });
     </script>
     <?php include "includes/script.php"; ?>
