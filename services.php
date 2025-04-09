@@ -200,10 +200,26 @@
             margin-top: auto;
             opacity: 0.8;
             transition: opacity 0.3s ease;
+            margin-bottom: 1rem;
         }
 
         .service-card:hover .service-description {
             opacity: 1;
+        }
+
+        /* Price Tag Styling */
+        .service-price {
+            color: #ff6600;
+            font-weight: 700;
+            font-size: 1.1rem;
+            margin-top: auto;
+            padding-top: 0.75rem;
+            border-top: 1px dashed rgba(255, 102, 0, 0.3);
+            transition: transform 0.3s ease;
+        }
+
+        .service-card:hover .service-price {
+            transform: scale(1.05);
         }
 
         @media (max-width: 768px) {
@@ -229,6 +245,7 @@
                 icon: 'fa-solid fa-lock',
                 title: 'Gate Automation',
                 description: 'Advanced automated gate systems with smart access control and seamless integration.',
+                price: 'Price Starts at  ₱90,000',
                 link: 'services/gate automation.php'
             },
             {
@@ -236,6 +253,7 @@
                 icon: 'fa-solid fa-home',
                 title: 'Gate Fabrication',
                 description: 'Custom-designed gates crafted with precision and aesthetic appeal.',
+                price: 'Price Starts at  ₱220,000',
                 link: 'services/gate_fabrication.php'
             },
             {
@@ -243,6 +261,7 @@
                 icon: 'fa-solid fa-camera',
                 title: 'Sectional Garage Door',
                 description: 'Modern garage doors offering superior insulation and security.',
+                price: 'Price Starts at  ₱230,000',
                 link: 'services/garage_door.php'
             },
             {
@@ -250,6 +269,7 @@
                 icon: 'fa-solid fa-bolt',
                 title: 'Roll Up Door',
                 description: 'High-performance doors for commercial and industrial applications.',
+                price: 'Price Starts at  ₱220,000',
                 link: 'services/roll_up_door.php'
             },
             {
@@ -257,6 +277,7 @@
                 icon: 'fa-solid fa-shield-halved',
                 title: 'Smart Electric Fence',
                 description: 'Cutting-edge perimeter protection with advanced monitoring systems.',
+                price: 'Price Starts at ₱70,000',
                 link: 'services/electric_fence.php'
             },
             {
@@ -264,6 +285,7 @@
                 icon: 'fas fa-home',
                 title: 'Smart Curtain',
                 description: 'Automated curtain systems with intelligent home integration.',
+                price: 'Price Starts at  ₱70,000',
                 link: 'services/smart_curtain.php'
             }
         ];
@@ -287,6 +309,9 @@
                     <span class="service-explore">Explore</span>
                 </div>
                 <p class="service-description">${service.description}</p>
+                <div class="service-price">
+                    <i class="fa-solid fa-tag"></i> ${service.price}
+                </div>
             </div>
         `;
                 serviceCard.addEventListener('click', () => {

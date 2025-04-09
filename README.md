@@ -77,5 +77,5 @@ SteelSync is a web-based business management system integrating appointments, in
 - Ui/Ux Designer & QA Specialist: Jhon Ozzy G. Hernandez
 - Asst. Designer: Rossel T. Tiquia
 - Backend Developer: Angelo L. Acquitan
-- Front-end Developer: Alexix P. Mendoza
+- Front-end Developer: Alexis P. Mendoza
 

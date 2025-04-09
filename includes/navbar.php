@@ -31,7 +31,7 @@ $baseUrl = '/steelsync/';
                             <i class="fas fa-robot"></i>
                             Gate Automation
                         </a>
-                        <a href="<?php echo $baseUrl; ?>services/gate fabrication.php" class="dropdown-item">
+                        <a href="<?php echo $baseUrl; ?>services/gate_fabrication.php" class="dropdown-item">
                             <i class="fas fa-hammer"></i>
                             Gate Fabrication
                         </a>

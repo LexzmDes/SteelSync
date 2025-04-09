@@ -129,6 +129,22 @@
             line-height: 1.8;
         }
 
+        .pricing {
+            text-align: center;
+            background-color: #fff;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+        }
+
+        .price-tag {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #ff6600;
+            margin: 10px 0;
+            font-family: 'Montserrat', sans-serif;
+        }
 
         /* More Info Section */
         .more-info {
@@ -383,6 +399,11 @@
 
                 </div>
             </div>
+            <div class="pricing">
+                <h3>Affordable Security Solutions</h3>
+                <div class="price-tag">Price Starts at ₱220,000</div>
+                <p>Professional installation and comprehensive warranty included</p>
+            </div>
         </div>
     </section>
 
@@ -436,7 +457,7 @@
             <p>For more info kindly visit our page: <a
                     href="https://www.facebook.com/IntellitechSystemOPC">https://www.facebook.com/IntellitechSystemOPC</a>
             </p>
-
+            <p style="color: #ff9800; font-size: 1.5rem; font-weight: bold; margin-top: 30px;">Price Starts at ₱220,000</p>
         </div>
     </section>
 
@@ -483,7 +504,6 @@
                     <p>Our metal fabrication services include cutting, bending, welding, and assembling various metal
                         components to create structures and products that are both functional and aesthetically
                         pleasing.</p>
-
                 </div>
             </div>
         </div>

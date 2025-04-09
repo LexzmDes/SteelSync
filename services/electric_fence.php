@@ -129,6 +129,23 @@
             line-height: 1.8;
         }
 
+        /* Pricing Section */
+        .pricing {
+            text-align: center;
+            background-color: #fff;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+        }
+
+        .price-tag {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #ff6600;
+            margin: 10px 0;
+            font-family: 'Montserrat', sans-serif;
+        }
 
         /* More Info Section */
         .more-info {
@@ -296,12 +313,17 @@
                 </div>
                 <div class="hero-text">
                     <h2>At Intellitech Systems</h2>
-                    <p>We offers advanced A smart fence refers to an advanced, technology-driven barrier system designed to detect, deter, and delay unauthorized intrusions or potential threats.
+                    <p>We offers advanced A smart fence refers to an advanced, technology-driven barrier system designed to detect, deter, and delay unauthorized intrusions or potential threats.
                     </p>
                     <p>Our team of experts has years of experience in metal fabrication, delivering custom solutions
                         that meet your specific needs and exceed your expectations.</p>
-
                 </div>
+            </div>
+            <!-- Added Pricing Section -->
+            <div class="pricing">
+                <h3>Affordable Security Solutions</h3>
+                <div class="price-tag">Price Starts at  ₱70,000</div>
+                <p>Professional installation and comprehensive warranty included</p>
             </div>
         </div>
     </section>
@@ -354,7 +376,8 @@
             <p>For more info kindly visit our page: <a
                     href="https://www.facebook.com/IntellitechSystemOPC">https://www.facebook.com/IntellitechSystemOPC</a>
             </p>
-
+            <!-- Added pricing info in the fabrication section too -->
+            <p style="color: #ff9800; font-size: 1.5rem; font-weight: bold; margin-top: 30px;">Price Starts at  ₱70,000</p>
         </div>
     </section>
 
