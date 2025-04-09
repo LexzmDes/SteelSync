@@ -8,8 +8,6 @@ if (!isset($_SESSION["user"])) {
 }
 // Verify the user has the correct role
 if ($_SESSION["role"] !== 'super_admin') {
-    // Redirect to appropriate page or show error
-
     header("Location: /steelsync/admin/login.php");
     exit();
 }
@@ -38,6 +36,23 @@ if ($_SESSION["role"] !== 'super_admin') {
             font-family: 'Roboto', sans-serif;
         }
 
+        .orders-table th {
+            text-align: center !important;
+            /* Center all headers */
+            vertical-align: middle;
+            /* Vertically center content if needed */
+        }
+
+        .orders-table td {
+            text-align: center !important;
+            /* Center all cell content */
+        }
+
+        /* Specific fix for action buttons */
+        .action-buttons {
+            justify-content: center !important;
+        }
+
         .main--content {
             position: absolute;
             top: 60px;
@@ -54,91 +69,76 @@ if ($_SESSION["role"] !== 'super_admin') {
             width: calc(100% - 103px);
         }
 
-        /* Orders Management Styles */
-        .orders-container {
-            padding: 15px;
-            background-color: #f7f7f7;
-        }
-
-        /* Order Statistics Cards */
-        .order-stats {
-            display: flex;
-            gap: 20px;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
-        }
-
-        .stat-card {
-            background-color: #fff;
+        /* Orders Management Container */
+        .orders-manager-container {
+            background-color: white;
             border-radius: 8px;
             padding: 20px;
-            min-width: 200px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
-            flex: 1;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
         }
 
-        .stat-card h3 {
-            font-size: 16px;
-            color: #666;
-            margin-bottom: 10px;
-        }
-
-        .stat-number {
-            font-size: 28px;
-            font-weight: 700;
-            color: #333;
-        }
-
-        /* Order Controls */
-        .order-controls {
+        .orders-manager-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .orders-manager-header h2 {
+            font-size: 24px;
+            color: #333;
+        }
+
+        /* Filter and Search */
+        .orders-manager-tools {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
             flex-wrap: wrap;
             gap: 15px;
         }
 
-        .filter-controls {
+        .filter-search {
             display: flex;
             gap: 15px;
             flex-wrap: wrap;
             flex: 1;
         }
 
-        .filter-dropdown {
+        .dropdown select {
             padding: 10px 15px;
             border: 1px solid #e0e0e0;
             border-radius: 5px;
             background-color: #fff;
-            min-width: 150px;
-            font-size: 14px;
+            min-width: 200px;
         }
 
-        .search-box {
-            position: relative;
+        .search-container {
+            display: flex;
+            align-items: center;
             flex: 1;
-            max-width: 300px;
+            max-width: 400px;
         }
 
-        .search-box input {
-            width: 100%;
+        .search-container input {
             padding: 10px 15px;
-            padding-right: 40px;
             border: 1px solid #e0e0e0;
-            border-radius: 5px;
-            font-size: 14px;
+            border-radius: 5px 0 0 5px;
+            flex: 1;
         }
 
-        .search-icon {
-            position: absolute;
-            right: 15px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: #666;
+        .search-btn {
+            padding: 10px 15px;
+            background-color: #f57c00;
+            color: white;
+            border: none;
+            border-radius: 0 5px 5px 0;
+            cursor: pointer;
         }
 
-        .new-order-btn {
+        .add-order-btn {
             background-color: #f57c00;
             color: white;
             border: none;
@@ -152,40 +152,33 @@ if ($_SESSION["role"] !== 'super_admin') {
             transition: background-color 0.3s;
         }
 
-        .new-order-btn:hover {
+        .add-order-btn:hover {
             background-color: #e65100;
         }
 
         /* Orders Table */
-        .orders-table-container {
-            background-color: #fff;
-            border-radius: 8px;
-            overflow: hidden;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
-            margin-bottom: 20px;
-        }
-
         .orders-table {
             width: 100%;
             border-collapse: collapse;
+            margin-bottom: 20px;
         }
 
         .orders-table th {
-            background-color: #f9f9f9;
-            padding: 15px;
+            background-color: #f5f5f5;
+            padding: 12px 15px;
             text-align: left;
             font-weight: 500;
-            color: #333;
-            border-bottom: 1px solid #eee;
+            color: #555;
+            border-bottom: 2px solid #eee;
         }
 
         .orders-table td {
-            padding: 15px;
+            padding: 12px 15px;
             border-bottom: 1px solid #eee;
             color: #555;
         }
 
-        .orders-table tbody tr:hover {
+        .orders-table tr:hover {
             background-color: #f9f9f9;
         }
 
@@ -196,8 +189,6 @@ if ($_SESSION["role"] !== 'super_admin') {
             font-size: 12px;
             font-weight: 500;
             display: inline-block;
-            text-align: center;
-            min-width: 100px;
         }
 
         .paid {
@@ -217,137 +208,151 @@ if ($_SESSION["role"] !== 'super_admin') {
 
         .complete {
             background-color: #e0ffe0;
-            color: #4aff4a;
+            color: #2ecc71;
         }
 
         /* Action Buttons */
         .action-buttons {
             display: flex;
-            gap: 10px;
+            gap: 8px;
         }
 
         .action-btn {
-            width: 32px;
-            height: 32px;
+            padding: 6px 12px;
             border-radius: 4px;
             border: none;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.3s;
             display: flex;
             align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: background-color 0.3s;
+            gap: 5px;
         }
 
         .view-btn {
-            background-color: #f0f0f0;
-            color: #3498db;
+            background-color: #e0f7ff;
+            color: #4ac4ff;
         }
 
-        .check-btn {
-            background-color: #f0f0f0;
-            color: #27ae60;
+        .view-btn:hover {
+            background-color: #d0e7ff;
         }
 
-        .delete-btn {
-            background-color: #f0f0f0;
-            color: #e74c3c;
+        .complete-btn {
+            background-color: #e0ffe0;
+            color: #2ecc71;
         }
 
-        .action-btn:hover {
-            background-color: #e0e0e0;
+        .complete-btn:hover {
+            background-color: #d0f0d0;
+        }
+
+        .archive-btn {
+            color: black;
+        }
+
+        .archive-btn:hover {
+            background-color: #555;
+        }
+
+        .restore-btn {
+            background-color: #2ecc71;
+            color: white;
+        }
+
+        .restore-btn:hover {
+            background-color: #27ae60;
+        }
+
+        /* Archived row styling */
+        .archived {
+            opacity: 0.7;
+            background-color: #f9f9f9;
+        }
+
+        .archived td {
+            color: #999;
+        }
+
+        .archived-badge {
+            background-color: #f39c12;
+            color: white;
+            font-size: 10px;
+            padding: 2px 5px;
+            border-radius: 3px;
+            margin-left: 5px;
         }
 
         /* Pagination */
         .pagination {
             display: flex;
             align-items: center;
-            justify-content: flex-end;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+
+        .page-buttons {
+            display: flex;
             gap: 8px;
         }
 
-        .pagination-btn {
+        .page-btn {
             padding: 8px 15px;
             border: 1px solid #e0e0e0;
             background-color: #fff;
             border-radius: 4px;
             cursor: pointer;
             transition: all 0.3s;
-            font-size: 14px;
         }
 
-        .pagination-btn.active {
+        .page-btn:hover:not(:disabled) {
+            background-color: #f0f0f0;
+        }
+
+        .page-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .page-numbers {
+            display: flex;
+            gap: 5px;
+        }
+
+        .page-number {
+            padding: 8px 12px;
+            border: 1px solid #e0e0e0;
+            background-color: #fff;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .page-number.active {
             background-color: #f57c00;
             color: white;
             border-color: #f57c00;
         }
 
-        .pagination-btn:hover:not(.active) {
-            background-color: #f0f0f0;
+        .page-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
 
-        .pagination-info {
-            margin-left: 15px;
-            color: #666;
-            font-size: 14px;
+        .page-info input {
+            width: 40px;
+            padding: 5px;
+            text-align: center;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
         }
 
-        /* Responsive Adjustments */
-        @media (max-width: 1024px) {
-            .orders-table {
-                min-width: 800px;
-            }
-
-            .orders-table-container {
-                overflow-x: auto;
-            }
-        }
-
-        @media (max-width: 768px) {
-            .order-stats {
-                flex-direction: column;
-            }
-
-            .stat-card {
-                width: 100%;
-            }
-
-            .order-controls {
-                flex-direction: column;
-                align-items: stretch;
-            }
-
-            .filter-controls {
-                width: 100%;
-            }
-
-            .search-box {
-                max-width: 100%;
-            }
-
-            .new-order-btn {
-                width: 100%;
-                justify-content: center;
-            }
-        }
-
-        /* Adjustments for sidebar states */
-        .main--content.active .orders-container {
-            padding: 10px;
-        }
-
-        .main--content.active .order-stats {
-            gap: 15px;
-        }
-
-        .main--content.active .stat-card {
-            padding: 15px;
-        }
-
+        /* Modal Styles */
         .modal {
             display: none;
-            /* Hidden by default */
             position: fixed;
-            z-index: 100000;
+            z-index: 1000;
             left: 0;
             top: 0;
             width: 100%;
@@ -356,94 +361,118 @@ if ($_SESSION["role"] !== 'super_admin') {
             background-color: rgba(0, 0, 0, 0.5);
         }
 
-        /* Modal Content */
         .modal-content {
             background-color: #fff;
-            margin: 10% auto;
-            padding: 20px;
+            margin: 5% auto;
+            padding: 25px;
             border-radius: 8px;
-            width: 100%;
-            max-width: 1000px;
+            width: 90%;
+            max-width: 800px;
+            position: relative;
         }
 
-        /* Close Button */
         .close {
-            color: #aaa;
-            font-size: 28px;
-            font-weight: bold;
             position: absolute;
-            top: 10px;
-            right: 15px;
-        }
-
-        .close:hover,
-        .close:focus {
-            color: black;
-            text-decoration: none;
+            top: 15px;
+            right: 20px;
+            font-size: 24px;
+            color: #aaa;
             cursor: pointer;
         }
 
-        /* Form Styling */
+        .close:hover {
+            color: #333;
+        }
+
+        /* Form Styles */
+        .form-section {
+            margin-bottom: 20px;
+        }
+
+        .form-section h3 {
+            margin-bottom: 15px;
+            color: #333;
+            font-size: 18px;
+        }
+
         .form-row {
             display: flex;
-            flex-wrap: wrap;
             gap: 20px;
+            margin-bottom: 15px;
         }
 
         .form-group {
             flex: 1;
-            min-width: 200px;
         }
 
-        label {
+        .form-group label {
             display: block;
             margin-bottom: 5px;
+            color: #555;
         }
 
-        input,
-        select {
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
             width: 100%;
-            padding: 8px;
-            box-sizing: border-box;
-            border: 1px solid #ccc;
+            padding: 10px;
+            border: 1px solid #ddd;
             border-radius: 4px;
         }
 
-        button {
+        .form-buttons {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .form-buttons button {
             padding: 10px 20px;
             border: none;
             border-radius: 4px;
             cursor: pointer;
-            background-color:rgb(230, 178, 81);
+            font-weight: 500;
+        }
+
+        .cancel-btn {
+            background-color: #f5f5f5;
+            color: #555;
+        }
+
+        .save-btn {
+            background-color: #f57c00;
             color: white;
-            font-size: 16px;
         }
 
-        button.cancel-btn {
-            background-color: #f44336;
-        }
-
-        button:hover {
-            opacity: 0.8;
-        }
-
-        /* Form Actions */
-        .form-actions {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 20px;
-        }
-
-        /* Responsive Design */
-        @media (max-width: 600px) {
+        /* Responsive */
+        @media (max-width: 768px) {
             .form-row {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .orders-manager-tools {
+                flex-direction: column;
+            }
+
+            .filter-search {
+                width: 100%;
+            }
+
+            .search-container {
+                max-width: 100%;
+            }
+
+            .add-order-btn {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .action-buttons {
                 flex-direction: column;
             }
         }
-
-
-        /**dito mo lagay yung css ng point of sale content yung css sa taas default yan format ng main--content wag mo aalisin*/
-    </style>
     </style>
 </head>
 
@@ -451,384 +480,561 @@ if ($_SESSION["role"] !== 'super_admin') {
     <?php include "includes/header.php"; ?>
     <?php include "includes/sidebar.php"; ?>
 
-
     <div class="main--content">
-        <!-- dito mo ilagay yung point of sale ng appointment-->
-
-        <!-- Orders Management UI -->
-        <div class="orders-container">
-            <!-- Order Statistics Cards -->
-            <div class="order-stats">
-                <div class="stat-card">
-                    <h3>Total Orders</h3>
-                    <p class="stat-number">8</p>
-                </div>
-                <div class="stat-card">
-                    <h3>Active Orders</h3>
-                    <p class="stat-number">4</p>
-                </div>
-                <div class="stat-card">
-                    <h3>Complete Orders</h3>
-                    <p class="stat-number">4</p>
-                </div>
+        <div class="orders-manager-container">
+            <div class="orders-manager-header">
+                <h2>ORDERS MANAGER</h2>
             </div>
 
-            <!-- Order Controls -->
-            <div class="order-controls">
-                <div class="filter-controls">
-                    <select class="filter-dropdown">
-                        <option>All</option>
-                        <option>Ongoing</option>
-                        <option>Complete</option>
-                        <option>Paid</option>
-                        <option>Unpaid</option>
-                    </select>
-
-                    <div class="search-box">
-                        <input type="text" placeholder="Search">
-                        <i class="ri-search-line search-icon"></i>
+            <div class="orders-manager-tools">
+                <div class="filter-search">
+                    <div class="dropdown">
+                        <select id="filterDropdown">
+                            <option value="all">All Orders</option>
+                            <option value="archived">Archived Orders</option>
+                            <option value="ongoing">Ongoing</option>
+                            <option value="complete">Complete</option>
+                            <option value="paid">Paid</option>
+                            <option value="unpaid">Unpaid</option>
+                        </select>
+                    </div>
+                    <div class="search-container">
+                        <input type="text" id="searchInput" placeholder="Search by client name">
+                        <button class="search-btn">Search</button>
                     </div>
                 </div>
-
-                <button class="new-order-btn" id="openOrderModalBtn">
-                    <i class="ri-add-line"></i> NEW ORDER
+                <button class="add-order-btn" id="openOrderModalBtn">
+                    <i class="fas fa-plus"></i> Add Order
                 </button>
             </div>
 
-            <!-- Orders Table -->
-            <div class="orders-table-container">
-                <table class="orders-table">
-                    <thead>
-                        <tr>
-                            <th>Client Name</th>
-                            <th>Service Availed</th>
-                            <th>Payment Status</th>
-                            <th>Order Status</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>Jennylyn Vinuya</td>
-                            <td>Gate Automation</td>
-                            <td><span class="status-badge unpaid">UNPAID</span></td>
-                            <td><span class="status-badge ongoing">ONGOING</span></td>
-                            <td class="action-buttons">
-                                <button class="action-btn view-btn"><i class="ri-file-list-line"></i></button>
-                                <button class="action-btn check-btn"><i class="ri-check-line"></i></button>
-                                <button class="action-btn delete-btn"><i class="ri-delete-bin-line"></i></button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Mike Dela Cruz</td>
-                            <td>Sectional Garage Door</td>
-                            <td><span class="status-badge paid">PAID</span></td>
-                            <td><span class="status-badge complete">COMPLETE</span></td>
-                            <td class="action-buttons">
-                                <button class="action-btn view-btn"><i class="ri-file-list-line"></i></button>
-                                <button class="action-btn check-btn"><i class="ri-check-line"></i></button>
-                                <button class="action-btn delete-btn"><i class="ri-delete-bin-line"></i></button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Ozzy Hernandez</td>
-                            <td>Roll Up Door</td>
-                            <td><span class="status-badge unpaid">UNPAID</span></td>
-                            <td><span class="status-badge complete">COMPLETE</span></td>
-                            <td class="action-buttons">
-                                <button class="action-btn view-btn"><i class="ri-file-list-line"></i></button>
-                                <button class="action-btn check-btn"><i class="ri-check-line"></i></button>
-                                <button class="action-btn delete-btn"><i class="ri-delete-bin-line"></i></button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Angelo Aqcuitan</td>
-                            <td>Smart Electric Fence Out</td>
-                            <td><span class="status-badge paid">PAID</span></td>
-                            <td><span class="status-badge ongoing">ONGOING</span></td>
-                            <td class="action-buttons">
-                                <button class="action-btn view-btn"><i class="ri-file-list-line"></i></button>
-                                <button class="action-btn check-btn"><i class="ri-check-line"></i></button>
-                                <button class="action-btn delete-btn"><i class="ri-delete-bin-line"></i></button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Alexis Paira</td>
-                            <td>Gate Fabrication</td>
-                            <td><span class="status-badge paid">PAID</span></td>
-                            <td><span class="status-badge complete">COMPLETE</span></td>
-                            <td class="action-buttons">
-                                <button class="action-btn view-btn"><i class="ri-file-list-line"></i></button>
-                                <button class="action-btn check-btn"><i class="ri-check-line"></i></button>
-                                <button class="action-btn delete-btn"><i class="ri-delete-bin-line"></i></button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Rossel Tiqua</td>
-                            <td>Smart Curtain</td>
-                            <td><span class="status-badge unpaid">UNPAID</span></td>
-                            <td><span class="status-badge ongoing">ONGOING</span></td>
-                            <td class="action-buttons">
-                                <button class="action-btn view-btn"><i class="ri-file-list-line"></i></button>
-                                <button class="action-btn check-btn"><i class="ri-check-line"></i></button>
-                                <button class="action-btn delete-btn"><i class="ri-delete-bin-line"></i></button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Alfred Io</td>
-                            <td>Smart Electric Fence Out</td>
-                            <td><span class="status-badge paid">PAID</span></td>
-                            <td><span class="status-badge ongoing">ONGOING</span></td>
-                            <td class="action-buttons">
-                                <button class="action-btn view-btn"><i class="ri-file-list-line"></i></button>
-                                <button class="action-btn check-btn"><i class="ri-check-line"></i></button>
-                                <button class="action-btn delete-btn"><i class="ri-delete-bin-line"></i></button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Rossel Tiqua</td>
-                            <td>Smart Curtain</td>
-                            <td><span class="status-badge unpaid">UNPAID</span></td>
-                            <td><span class="status-badge complete">COMPLETE</span></td>
-                            <td class="action-buttons">
-                                <button class="action-btn view-btn"><i class="ri-file-list-line"></i></button>
-                                <button class="action-btn check-btn"><i class="ri-check-line"></i></button>
-                                <button class="action-btn delete-btn"><i class="ri-delete-bin-line"></i></button>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
+            <table class="orders-table">
+                <thead>
+                    <tr>
+                        <th>Client Name</th>
+                        <th>Service Availed</th>
+                        <th>Payment Status</th>
+                        <th>Order Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="ordersTableBody">
+                    <!-- Orders will be populated via JavaScript -->
+                </tbody>
+            </table>
 
-            <!-- Pagination -->
             <div class="pagination">
-                <button class="pagination-btn"><i class="ri-arrow-left-s-line"></i></button>
-                <button class="pagination-btn">Prev</button>
-                <button class="pagination-btn active">1</button>
-                <button class="pagination-btn">Next</button>
-                <div class="pagination-info">
-                    <span>Page: 1</span>
-                    <span>of 1</span>
+                <div class="page-buttons">
+                    <button class="page-btn" id="prevBtn" disabled><i class="fas fa-chevron-left"></i> Prev</button>
+                    <div class="page-numbers" id="pageNumbers">
+                        <button class="page-number active">1</button>
+                    </div>
+                    <button class="page-btn" id="nextBtn">Next <i class="fas fa-chevron-right"></i></button>
+                </div>
+                <div class="page-info">
+                    Page:
+                    <input type="text" class="page-input" id="pageInput" value="1">
+                    of <span id="totalPages">1</span>
                 </div>
             </div>
         </div>
     </div>
+
+    <!-- Order Modal -->
     <div id="orderModal" class="modal">
         <div class="modal-content">
             <span class="close">&times;</span>
-            <h2>Create New Order</h2>
+            <h2 id="modalTitle">Add New Order</h2>
             <form id="orderForm">
-                <!-- Customer Information -->
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="customerName">Customer Name</label>
-                        <input type="text" id="customerName" name="customerName" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="contactNumber">Contact Number</label>
-                        <input type="text" id="contactNumber" name="contactNumber">
+                <input type="hidden" id="orderId" value="">
+
+                <div class="form-section">
+                    <h3>Client Information</h3>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="clientName">Client Name</label>
+                            <input type="text" id="clientName" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="contactNumber">Contact Number</label>
+                            <input type="text" id="contactNumber">
+                        </div>
                     </div>
                 </div>
 
-                <!-- Item Information -->
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="item">Services</label>
-                        <select id="item" name="item" required>
-                            <option value="item1">Gate 1</option>
-                            <option value="item2">Gate 2</option>
-                            <option value="item3">Gate 4</option>
-                            <option value="item3">Gate 5</option>
-                            <option value="item3">Gate 6</option>
-                        </select>
+                <div class="form-section">
+                    <h3>Order Details</h3>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="service">Service</label>
+                            <select id="service" required>
+                                <option value="Gate Automation">Gate Automation</option>
+                                <option value="Sectional Garage Door">Sectional Garage Door</option>
+                                <option value="Roll Up Door">Roll Up Door</option>
+                                <option value="Smart Electric Fence">Smart Electric Fence</option>
+                                <option value="Gate Fabrication">Gate Fabrication</option>
+                                <option value="Smart Curtain">Smart Curtain</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="quantity">Quantity</label>
+                            <input type="number" id="quantity" value="1" min="1" required>
+                        </div>
                     </div>
                     <div class="form-group">
-                        <label for="quantity">Quantity</label>
-                        <input type="number" id="quantity" name="quantity" required>
-                    </div>
-                </div>
-
-                <!-- Order Summary -->
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="totalAmount">Total Amount</label>
-                        <input type="text" id="totalAmount" name="totalAmount" readonly>
-                    </div>
-                </div>
-
-                <!-- Payment Information -->
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="paymentMethod">Payment Method</label>
-                        <select id="paymentMethod" name="paymentMethod">
-                            <option value="cash">Cash</option>
-                            <option value="credit">Credit Card</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="amountPaid">Amount Paid</label>
-                        <input type="number" id="amountPaid" name="amountPaid" required>
+                        <label for="notes">Notes</label>
+                        <textarea id="notes" rows="3"></textarea>
                     </div>
                 </div>
 
-                <!-- Action Buttons -->
-                <div class="form-actions">
-                    <button type="submit" class="submit-btn">Complete Order</button>
-                    <button type="button" class="cancel-btn" id="cancelBtn">Cancel</button>
+                <div class="form-section">
+                    <h3>Status</h3>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="paymentStatus">Payment Status</label>
+                            <select id="paymentStatus" required>
+                                <option value="paid">Paid</option>
+                                <option value="unpaid">Unpaid</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="orderStatus">Order Status</label>
+                            <select id="orderStatus" required>
+                                <option value="ongoing">Ongoing</option>
+                                <option value="complete">Complete</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-buttons">
+                    <button type="button" id="cancelBtn">Cancel</button>
+                    <button type="submit" id="saveBtn">Save</button>
                 </div>
             </form>
         </div>
     </div>
 
+    <!-- Archive Confirmation Modal -->
+    <div id="confirmModal" class="modal">
+        <div class="modal-content confirmation-modal">
+            <h2 id="archiveModalTitle">Confirm Archive</h2>
+            <p id="archiveConfirmText">Are you sure you want to archive this order? Archived orders can be restored later.</p>
+            <div class="form-buttons">
+                <button type="button" id="cancelArchiveBtn">Cancel</button>
+                <button type="button" id="confirmArchiveBtn">Archive</button>
+            </div>
+        </div>
+    </div>
 
     <script>
-        /**dito mo lagay yung js ng point of sale content */
-        // JavaScript for Orders Management functionality
         document.addEventListener('DOMContentLoaded', function() {
-            // Filter functionality
-            const filterDropdown = document.querySelector('.filter-dropdown');
-            if (filterDropdown) {
-                filterDropdown.addEventListener('change', function() {
-                    // Filter logic would go here
-                    console.log('Filter changed to:', this.value);
+            // Sample order data with archived status
+            const orderData = [{
+                    id: 1,
+                    clientName: "Jennylyn Vinuya",
+                    service: "Gate Automation",
+                    paymentStatus: "unpaid",
+                    orderStatus: "ongoing",
+                    archived: false
+                },
+                {
+                    id: 2,
+                    clientName: "Mike Dela Cruz",
+                    service: "Sectional Garage Door",
+                    paymentStatus: "paid",
+                    orderStatus: "complete",
+                    archived: false
+                },
+                {
+                    id: 3,
+                    clientName: "Ozzy Hernandez",
+                    service: "Roll Up Door",
+                    paymentStatus: "unpaid",
+                    orderStatus: "complete",
+                    archived: false
+                },
+                {
+                    id: 4,
+                    clientName: "Angelo Aqcuitan",
+                    service: "Smart Electric Fence",
+                    paymentStatus: "paid",
+                    orderStatus: "ongoing",
+                    archived: false
+                },
+                {
+                    id: 5,
+                    clientName: "Alexis Paira",
+                    service: "Gate Fabrication",
+                    paymentStatus: "paid",
+                    orderStatus: "complete",
+                    archived: false
+                },
+                {
+                    id: 6,
+                    clientName: "Rossel Tiqua",
+                    service: "Smart Curtain",
+                    paymentStatus: "unpaid",
+                    orderStatus: "ongoing",
+                    archived: false
+                },
+                {
+                    id: 7,
+                    clientName: "Alfred Io",
+                    service: "Smart Electric Fence",
+                    paymentStatus: "paid",
+                    orderStatus: "ongoing",
+                    archived: false
+                },
+                {
+                    id: 8,
+                    clientName: "Rossel Tiqua",
+                    service: "Smart Curtain",
+                    paymentStatus: "unpaid",
+                    orderStatus: "complete",
+                    archived: true
+                }
+            ];
+
+            // Variables for pagination
+            let currentPage = 1;
+            const recordsPerPage = 5;
+            let filteredData = [...orderData];
+
+            // Elements
+            const filterDropdown = document.getElementById('filterDropdown');
+            const searchInput = document.getElementById('searchInput');
+            const tableBody = document.getElementById('ordersTableBody');
+            const prevBtn = document.getElementById('prevBtn');
+            const nextBtn = document.getElementById('nextBtn');
+            const pageInput = document.getElementById('pageInput');
+            const totalPagesSpan = document.getElementById('totalPages');
+            const pageNumbersDiv = document.getElementById('pageNumbers');
+            const addOrderBtn = document.getElementById('openOrderModalBtn');
+            const orderModal = document.getElementById('orderModal');
+            const confirmModal = document.getElementById('confirmModal');
+            const modalCloseBtns = document.querySelectorAll('.close');
+            const orderForm = document.getElementById('orderForm');
+            const modalTitle = document.getElementById('modalTitle');
+            const orderIdInput = document.getElementById('orderId');
+            const cancelBtn = document.getElementById('cancelBtn');
+            const cancelArchiveBtn = document.getElementById('cancelArchiveBtn');
+            const confirmArchiveBtn = document.getElementById('confirmArchiveBtn');
+            const archiveModalTitle = document.getElementById('archiveModalTitle');
+            const archiveConfirmText = document.getElementById('archiveConfirmText');
+
+            // Initialize the page
+            function init() {
+                displayData();
+                setupEventListeners();
+            }
+
+            // Filter and display data
+            function displayData() {
+                // Filter data based on dropdown and search input
+                const filterValue = filterDropdown.value;
+                const searchValue = searchInput.value.trim().toLowerCase();
+
+                filteredData = orderData.filter(order => {
+                    // Filter by dropdown selection
+                    const matchesFilter = filterValue === 'all' ||
+                        (filterValue === 'archived' && order.archived) ||
+                        order.paymentStatus === filterValue ||
+                        order.orderStatus === filterValue;
+
+                    // Filter by search text
+                    const matchesSearch = order.clientName.toLowerCase().includes(searchValue) ||
+                        order.service.toLowerCase().includes(searchValue);
+
+                    return matchesFilter && matchesSearch;
+                });
+
+                // Update pagination
+                const totalPages = Math.ceil(filteredData.length / recordsPerPage);
+                totalPagesSpan.textContent = totalPages;
+                if (currentPage > totalPages && totalPages > 0) {
+                    currentPage = totalPages;
+                }
+
+                updatePageNumbers(totalPages);
+                updatePaginationButtons(totalPages);
+
+                // Display current page
+                const startIndex = (currentPage - 1) * recordsPerPage;
+                const endIndex = startIndex + recordsPerPage;
+                const currentPageData = filteredData.slice(startIndex, endIndex);
+
+                // Clear table
+                tableBody.innerHTML = '';
+
+                if (currentPageData.length === 0) {
+                    const emptyRow = document.createElement('tr');
+                    emptyRow.innerHTML = '<td colspan="5" style="text-align: center; padding: 20px;">No orders found</td>';
+                    tableBody.appendChild(emptyRow);
+                } else {
+                    // Create rows for current page data
+                    currentPageData.forEach(order => {
+                        const row = document.createElement('tr');
+                        if (order.archived) {
+                            row.classList.add('archived');
+                        }
+
+                        row.innerHTML = `
+                            <td>${order.clientName} ${order.archived ? '<span class="archived-badge">Archived</span>' : ''}</td>
+                            <td>${order.service}</td>
+                            <td><span class="status-badge ${order.paymentStatus}">${order.paymentStatus.toUpperCase()}</span></td>
+                            <td><span class="status-badge ${order.orderStatus}">${order.orderStatus.toUpperCase()}</span></td>
+                            <td>
+                                <div class="action-buttons">
+                                    <button class="action-btn view-btn" data-id="${order.id}">
+                                        <i class="fas fa-eye"></i> View
+                                    </button>
+                                    <button class="action-btn complete-btn" data-id="${order.id}" ${order.orderStatus === 'complete' || order.archived ? 'disabled' : ''}>
+                                        <i class="fas fa-check"></i> Complete
+                                    </button>
+                                    <button class="action-btn archive-btn ${order.archived ? 'restore-btn' : ''}" data-id="${order.id}">
+                                        <i class="fas fa-${order.archived ? 'undo' : 'archive'}"></i> ${order.archived ? 'Restore' : 'Archive'}
+                                    </button>
+                                </div>
+                            </td>
+                        `;
+
+                        tableBody.appendChild(row);
+                    });
+
+                    // Add event listeners for action buttons
+                    addActionButtonEventListeners();
+                }
+            }
+
+            // Update page number buttons
+            function updatePageNumbers(totalPages) {
+                pageNumbersDiv.innerHTML = '';
+
+                // Determine range of page numbers to show
+                let startPage = Math.max(1, currentPage - 2);
+                let endPage = Math.min(totalPages, startPage + 4);
+
+                if (endPage - startPage < 4) {
+                    startPage = Math.max(1, endPage - 4);
+                }
+
+                // Create page number buttons
+                for (let i = startPage; i <= endPage; i++) {
+                    const pageBtn = document.createElement('button');
+                    pageBtn.className = 'page-number' + (i === currentPage ? ' active' : '');
+                    pageBtn.textContent = i;
+                    pageBtn.addEventListener('click', () => {
+                        currentPage = i;
+                        displayData();
+                    });
+                    pageNumbersDiv.appendChild(pageBtn);
+                }
+            }
+
+            // Update pagination buttons state
+            function updatePaginationButtons(totalPages) {
+                prevBtn.disabled = currentPage === 1;
+                nextBtn.disabled = currentPage === totalPages || totalPages === 0;
+                pageInput.value = currentPage;
+            }
+
+            // Add event listeners to action buttons
+            function addActionButtonEventListeners() {
+                document.querySelectorAll('.view-btn').forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        const orderId = btn.getAttribute('data-id');
+                        openEditModal(parseInt(orderId));
+                    });
+                });
+
+                document.querySelectorAll('.complete-btn:not([disabled])').forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        const orderId = btn.getAttribute('data-id');
+                        markOrderComplete(parseInt(orderId));
+                    });
+                });
+
+                document.querySelectorAll('.archive-btn').forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        const orderId = btn.getAttribute('data-id');
+                        openArchiveConfirmation(parseInt(orderId));
+                    });
                 });
             }
 
-            // Search functionality
-            const searchInput = document.querySelector('.search-box input');
-            if (searchInput) {
-                searchInput.addEventListener('input', function() {
-                    // Search logic would go here
-                    console.log('Searching for:', this.value);
+            // Mark order as complete
+            function markOrderComplete(orderId) {
+                const order = orderData.find(o => o.id === orderId);
+                if (order) {
+                    order.orderStatus = 'complete';
+                    displayData();
+                    alert(`Order #${orderId} marked as complete`);
+                }
+            }
+
+            // Open edit modal with order data
+            function openEditModal(orderId) {
+                const order = orderData.find(o => o.id === orderId);
+                if (order) {
+                    modalTitle.textContent = 'Edit Order';
+                    orderIdInput.value = order.id;
+                    document.getElementById('clientName').value = order.clientName;
+                    document.getElementById('contactNumber').value = order.contactNumber || '';
+                    document.getElementById('service').value = order.service;
+                    document.getElementById('quantity').value = order.quantity || 1;
+                    document.getElementById('notes').value = order.notes || '';
+                    document.getElementById('paymentStatus').value = order.paymentStatus;
+                    document.getElementById('orderStatus').value = order.orderStatus;
+
+                    orderModal.style.display = 'flex';
+                }
+            }
+
+            // Open add order modal
+            function openAddModal() {
+                modalTitle.textContent = 'Add New Order';
+                orderForm.reset();
+                orderIdInput.value = '';
+                orderModal.style.display = 'flex';
+            }
+
+            // Open archive confirmation modal
+            function openArchiveConfirmation(orderId) {
+                const order = orderData.find(o => o.id === orderId);
+                if (order) {
+                    if (order.archived) {
+                        archiveModalTitle.textContent = 'Confirm Restore';
+                        archiveConfirmText.textContent = 'Are you sure you want to restore this order?';
+                        confirmArchiveBtn.textContent = 'Restore';
+                    } else {
+                        archiveModalTitle.textContent = 'Confirm Archive';
+                        archiveConfirmText.textContent = 'Are you sure you want to archive this order? Archived orders can be restored later.';
+                        confirmArchiveBtn.textContent = 'Archive';
+                    }
+
+                    confirmArchiveBtn.setAttribute('data-id', orderId);
+                    confirmModal.style.display = 'flex';
+                }
+            }
+
+            // Toggle archive status
+            function toggleArchiveStatus() {
+                const orderId = parseInt(confirmArchiveBtn.getAttribute('data-id'));
+                const order = orderData.find(o => o.id === orderId);
+
+                if (order) {
+                    order.archived = !order.archived;
+                    displayData();
+                    closeModals();
+                }
+            }
+
+            // Close modals
+            function closeModals() {
+                orderModal.style.display = 'none';
+                confirmModal.style.display = 'none';
+            }
+
+            // Save order data
+            function saveOrder(event) {
+                event.preventDefault();
+
+                // Get form values
+                const orderId = orderIdInput.value;
+                const isEditMode = orderId !== '';
+
+                const newOrder = {
+                    id: isEditMode ? parseInt(orderId) : orderData.length + 1,
+                    clientName: document.getElementById('clientName').value,
+                    contactNumber: document.getElementById('contactNumber').value,
+                    service: document.getElementById('service').value,
+                    quantity: document.getElementById('quantity').value,
+                    notes: document.getElementById('notes').value,
+                    paymentStatus: document.getElementById('paymentStatus').value,
+                    orderStatus: document.getElementById('orderStatus').value,
+                    archived: false
+                };
+
+                if (isEditMode) {
+                    // Update existing order
+                    const index = orderData.findIndex(o => o.id === parseInt(orderId));
+                    if (index !== -1) {
+                        // Preserve the archived status when editing
+                        newOrder.archived = orderData[index].archived;
+                        orderData[index] = newOrder;
+                    }
+                } else {
+                    // Add new order
+                    orderData.push(newOrder);
+                }
+
+                closeModals();
+                displayData();
+            }
+
+            // Set up all event listeners
+            function setupEventListeners() {
+                // Filter and search
+                filterDropdown.addEventListener('change', () => {
+                    currentPage = 1;
+                    displayData();
+                });
+
+                searchInput.addEventListener('input', () => {
+                    currentPage = 1;
+                    displayData();
+                });
+
+                // Pagination buttons
+                prevBtn.addEventListener('click', () => {
+                    if (currentPage > 1) {
+                        currentPage--;
+                        displayData();
+                    }
+                });
+
+                nextBtn.addEventListener('click', () => {
+                    const totalPages = Math.ceil(filteredData.length / recordsPerPage);
+                    if (currentPage < totalPages) {
+                        currentPage++;
+                        displayData();
+                    }
+                });
+
+                pageInput.addEventListener('change', () => {
+                    const totalPages = Math.ceil(filteredData.length / recordsPerPage);
+                    const pageNum = parseInt(pageInput.value);
+
+                    if (!isNaN(pageNum) && pageNum >= 1 && pageNum <= totalPages) {
+                        currentPage = pageNum;
+                        displayData();
+                    } else {
+                        pageInput.value = currentPage;
+                    }
+                });
+
+                // Modal controls
+                addOrderBtn.addEventListener('click', openAddModal);
+                modalCloseBtns.forEach(btn => {
+                    btn.addEventListener('click', closeModals);
+                });
+                cancelBtn.addEventListener('click', closeModals);
+                cancelArchiveBtn.addEventListener('click', closeModals);
+                confirmArchiveBtn.addEventListener('click', toggleArchiveStatus);
+                orderForm.addEventListener('submit', saveOrder);
+
+                // Close modal when clicking outside
+                window.addEventListener('click', function(event) {
+                    if (event.target === orderModal || event.target === confirmModal) {
+                        closeModals();
+                    }
                 });
             }
 
-            // New Order button
-            const newOrderBtn = document.querySelector('.new-order-btn');
-            if (newOrderBtn) {
-                newOrderBtn.addEventListener('click', function() {
-                    // Open new order form/modal
-                    console.log('New Order button clicked');
-                });
-            }
-
-            // Action buttons
-            const actionButtons = document.querySelectorAll('.action-btn');
-            actionButtons.forEach(button => {
-                button.addEventListener('click', function() {
-                    const action = this.classList.contains('view-btn') ? 'view' :
-                        this.classList.contains('check-btn') ? 'check' : 'delete';
-                    const row = this.closest('tr');
-                    const clientName = row.cells[0].textContent;
-
-                    console.log(`${action} action for ${clientName}`);
-
-                    // Action-specific logic would go here
-                });
-            });
-
-            // Pagination
-            const paginationButtons = document.querySelectorAll('.pagination-btn');
-            paginationButtons.forEach(button => {
-                button.addEventListener('click', function() {
-                    // Pagination logic would go here
-                    console.log('Pagination button clicked:', this.textContent);
-                });
-            });
-
-            // Update counts (this would normally be done server-side)
-            updateOrderCounts();
+            // Initialize the application
+            init();
         });
-
-        // Function to update order counts
-        function updateOrderCounts() {
-            const totalOrders = document.querySelectorAll('.orders-table tbody tr').length;
-            const ongoingOrders = document.querySelectorAll('.status-badge.ongoing').length;
-            const completeOrders = document.querySelectorAll('.status-badge.complete').length;
-
-            // Update stat cards
-            const statNumbers = document.querySelectorAll('.stat-number');
-            if (statNumbers.length >= 3) {
-                statNumbers[0].textContent = totalOrders;
-                statNumbers[1].textContent = ongoingOrders;
-                statNumbers[2].textContent = completeOrders;
-            }
-        }
-        const modal = document.getElementById("orderModal");
-        const closeBtn = document.querySelector(".close");
-        const cancelBtn = document.getElementById("cancelBtn");
-        const orderForm = document.getElementById("orderForm");
-
-        // Get the button to open the modal
-        const openOrderModalBtn = document.getElementById("openOrderModalBtn");
-
-        // Function to open modal
-        function openModal() {
-            modal.style.display = "block";
-        }
-
-        // Function to close modal
-        function closeModal() {
-            modal.style.display = "none";
-        }
-
-        // Open modal when the button is clicked
-        openOrderModalBtn.addEventListener("click", openModal);
-
-        // Close the modal when clicking on the close button or cancel button
-        closeBtn.addEventListener("click", closeModal);
-        cancelBtn.addEventListener("click", closeModal);
-
-        // Close the modal if user clicks outside of the modal
-        window.addEventListener("click", (event) => {
-            if (event.target === modal) {
-                closeModal();
-            }
-        });
-
-        // Calculate total amount when item or quantity changes
-        document.getElementById("item").addEventListener("change", updateTotalAmount);
-        document.getElementById("quantity").addEventListener("input", updateTotalAmount);
-
-        function updateTotalAmount() {
-            const item = document.getElementById("item").value;
-            const quantity = document.getElementById("quantity").value;
-            let price = 0;
-
-            // Price based on the selected item (example prices)
-            switch (item) {
-                case "item1":
-                    price = 10;
-                    break;
-                case "item2":
-                    price = 20;
-                    break;
-                case "item3":
-                    price = 30;
-                    break;
-            }
-
-            // Update total amount
-            const totalAmount = price * quantity;
-            document.getElementById("totalAmount").value = totalAmount;
-        }
-
-        // Handle form submission
-        orderForm.addEventListener("submit", function(event) {
-            event.preventDefault(); // Prevent form submission
-
-            const amountPaid = document.getElementById("amountPaid").value;
-            const totalAmount = document.getElementById("totalAmount").value;
-
-            if (Number(amountPaid) < Number(totalAmount)) {
-                alert("Amount paid cannot be less than the total amount.");
-            } else {
-                alert("Order successfully created!");
-                closeModal(); // Close modal after order is placed
-            }
-        });
-    </script>
-
     </script>
     <?php include "includes/script.php"; ?>
 </body>

@@ -9,7 +9,6 @@ if (!isset($_SESSION["user"])) {
 // Verify the user has the correct role
 if ($_SESSION["role"] !== 'super_admin') {
     // Redirect to appropriate page or show error
-
     header("Location: /steelsync/admin/login.php");
     exit();
 }
@@ -32,7 +31,35 @@ if ($_SESSION["role"] !== 'super_admin') {
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         /**dito mo lagay yung css ng fix assets content yung css sa taas default yan format ng main--content wag mo aalisin*/
-    </style>
+        .row-item.employee-name {
+            position: relative;
+        }
+
+        .archived-badge {
+            background-color: #f39c12;
+            color: white;
+            font-size: 10px;
+            padding: 2px 5px;
+            border-radius: 3px;
+            margin-left: 5px;
+        }
+
+        .table-row.archived {
+            opacity: 0.7;
+            background-color: #f9f9f9;
+        }
+
+        .table-row.archived .row-item {
+            color: #999;
+        }
+
+        .action-btn.restore-btn {
+            background-color: #2ecc71;
+        }
+
+        .action-btn.restore-btn:hover {
+            background-color: #27ae60;
+        }
     </style>
 </head>
 
@@ -40,9 +67,7 @@ if ($_SESSION["role"] !== 'super_admin') {
     <?php include "includes/header.php"; ?>
     <?php include "includes/sidebar.php"; ?>
 
-
     <div class="main--content">
-        <!-- dito mo ilagay yung fix asseta ng appointment-->
         <div class="account-manager-container">
             <div class="account-manager-header">
                 <h2>ACCOUNT MANAGER</h2>
@@ -57,6 +82,7 @@ if ($_SESSION["role"] !== 'super_admin') {
                     <div class="dropdown">
                         <select id="filterDropdown">
                             <option value="all">All Roles</option>
+                            <option value="archived">Archived Accounts</option>
                             <option value="administrator">Administrator</option>
                             <option value="employee">Employee</option>
                             <optgroup label="Employee Positions">
@@ -219,207 +245,52 @@ if ($_SESSION["role"] !== 'super_admin') {
             <!-- Confirmation Modal -->
             <div id="confirmModal" class="modal">
                 <div class="modal-content confirmation-modal">
-                    <h2>Confirm Delete</h2>
-                    <p>Are you sure you want to delete this account? This action cannot be undone.</p>
+                    <h2 id="archiveModalTitle">Confirm Archive</h2>
+                    <p id="archiveConfirmText">Are you sure you want to archive this account? Archived accounts can be restored later.</p>
                     <div class="form-buttons">
-                        <button type="button" id="cancelDeleteBtn">Cancel</button>
-                        <button type="button" id="confirmDeleteBtn">Delete</button>
+                        <button type="button" id="cancelArchiveBtn">Cancel</button>
+                        <button type="button" id="confirmArchiveBtn">Archive</button>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Sample data of employees
-            const employeeData = [{
-                    id: 1,
-                    name: "Joel Ponce",
-                    role: "employee",
-                    position: "Training & ControlOperations Manager"
-                },
-                {
-                    id: 2,
-                    name: "Reinalyn Domdom",
-                    role: "employee",
-                    position: "Sales Staff"
-                },
-                {
-                    id: 3,
-                    name: "Kylie Emplamado",
-                    role: "employee",
-                    position: "Office Staff/Sales Clerk"
-                },
-                {
-                    id: 4,
-                    name: "Aerah Mae Valero",
-                    role: "employee",
-                    position: "Accounting & Inventory"
-                },
-                {
-                    id: 5,
-                    name: "King Sison Jerome",
-                    role: "employee",
-                    position: "Senior Supervisor"
-                },
-                {
-                    id: 6,
-                    name: "Royo Emmanuel",
-                    role: "employee",
-                    position: "Fabrication Team Leader"
-                },
-                {
-                    id: 7,
-                    name: "Benito Frankeddrey",
-                    role: "employee",
-                    position: "Site Team Leader"
-                },
-                {
-                    id: 8,
-                    name: "FerrerJemar Magtalas",
-                    role: "employee",
-                    position: "Skilled Welder/Driver"
-                },
-                {
-                    id: 9,
-                    name: "Rodel Rempillo",
-                    role: "employee",
-                    position: "Site Supervisor"
-                },
-                {
-                    id: 10,
-                    name: "Allan SapulGong",
-                    role: "employee",
-                    position: "TL/Skilled Welder"
-                },
-                {
-                    id: 11,
-                    name: "Serrano Rasty",
-                    role: "employee",
-                    position: "Skilled Welder"
-                },
-                {
-                    id: 12,
-                    name: "ParillaPhilip",
-                    role: "employee",
-                    position: "Fabrication Supervisor"
-                },
-                {
-                    id: 13,
-                    name: "Guliman Engelbert",
-                    role: "employee",
-                    position: "Fab Helper"
-                },
-                {
-                    id: 14,
-                    name: "CunananEriczon",
-                    role: "employee",
-                    position: "Welder"
-                },
-                {
-                    id: 15,
-                    name: "NapisaEdrian Espino",
-                    role: "employee",
-                    position: "Welder"
-                },
-                {
-                    id: 16,
-                    name: "Christian Espiritu",
-                    role: "employee",
-                    position: "Welder/Driver"
-                },
-                {
-                    id: 17,
-                    name: "Johnrey Castillo",
-                    role: "employee",
-                    position: "Skilled Welder/Driver"
-                },
-                {
-                    id: 18,
-                    name: "Ronnie Enriquez",
-                    role: "employee",
-                    position: "Helper - Welder"
-                },
-                {
-                    id: 19,
-                    name: "Billy Montero",
-                    role: "employee",
-                    position: "Helper - Mason"
-                },
-                {
-                    id: 20,
-                    name: "John Michael Libanan",
-                    role: "employee",
-                    position: "Helper - Welder"
-                },
-                {
-                    id: 21,
-                    name: "Piolo Sabater",
-                    role: "employee",
-                    position: "Electrician /Site Supervisor"
-                },
-                {
-                    id: 22,
-                    name: "Fernando Dulay Jr.",
-                    role: "employee",
-                    position: "Electrician /Team Leader"
-                },
-                {
-                    id: 23,
-                    name: "Rande Sorio",
-                    role: "employee",
-                    position: "Skilled Electrician/team leader"
-                },
-                {
-                    id: 24,
-                    name: "Rizaldo San Pedro",
-                    role: "employee",
-                    position: "Paint Supervisor"
-                },
-                {
-                    id: 25,
-                    name: "George Pica",
-                    role: "employee",
-                    position: "Skilled Painter"
-                },
-                {
-                    id: 26,
-                    name: "Joraydan Briones",
-                    role: "employee",
-                    position: "Skilled Painter"
-                },
-                {
-                    id: 27,
-                    name: "Jayson Auton",
-                    role: "employee",
-                    position: "Skilled Painter"
-                },
-                {
-                    id: 28,
-                    name: "Ronel Yesan",
-                    role: "employee",
-                    position: "Skilled Painter"
-                },
-                {
-                    id: 29,
-                    name: "Richard Cabiad",
-                    role: "employee",
-                    position: "Skilled Painter"
-                },
-                {
-                    id: 30,
-                    name: "Anabelle Austria",
-                    role: "administrator",
-                    position: "HR Manager/Admin"
-                },
-                {
-                    id: 31,
-                    name: "Milen San Jose",
-                    role: "administrator",
-                    position: "Purchaser"
-                }
+            // Sample data of employees with archived status
+            const employeeData = [
+                { id: 1, name: "Joel Ponce", role: "employee", position: "Training & ControlOperations Manager", archived: false },
+                { id: 2, name: "Reinalyn Domdom", role: "employee", position: "Sales Staff", archived: false },
+                { id: 3, name: "Kylie Emplamado", role: "employee", position: "Office Staff/Sales Clerk", archived: false },
+                { id: 4, name: "Aerah Mae Valero", role: "employee", position: "Accounting & Inventory", archived: false },
+                { id: 5, name: "King Sison Jerome", role: "employee", position: "Senior Supervisor", archived: false },
+                { id: 6, name: "Royo Emmanuel", role: "employee", position: "Fabrication Team Leader", archived: false },
+                { id: 7, name: "Benito Frankeddrey", role: "employee", position: "Site Team Leader", archived: false },
+                { id: 8, name: "FerrerJemar Magtalas", role: "employee", position: "Skilled Welder/Driver", archived: false },
+                { id: 9, name: "Rodel Rempillo", role: "employee", position: "Site Supervisor", archived: false },
+                { id: 10, name: "Allan SapulGong", role: "employee", position: "TL/Skilled Welder", archived: false },
+                { id: 11, name: "Serrano Rasty", role: "employee", position: "Skilled Welder", archived: false },
+                { id: 12, name: "ParillaPhilip", role: "employee", position: "Fabrication Supervisor", archived: false },
+                { id: 13, name: "Guliman Engelbert", role: "employee", position: "Fab Helper", archived: false },
+                { id: 14, name: "CunananEriczon", role: "employee", position: "Welder", archived: false },
+                { id: 15, name: "NapisaEdrian Espino", role: "employee", position: "Welder", archived: false },
+                { id: 16, name: "Christian Espiritu", role: "employee", position: "Welder/Driver", archived: false },
+                { id: 17, name: "Johnrey Castillo", role: "employee", position: "Skilled Welder/Driver", archived: false },
+                { id: 18, name: "Ronnie Enriquez", role: "employee", position: "Helper - Welder", archived: false },
+                { id: 19, name: "Billy Montero", role: "employee", position: "Helper - Mason", archived: false },
+                { id: 20, name: "John Michael Libanan", role: "employee", position: "Helper - Welder", archived: false },
+                { id: 21, name: "Piolo Sabater", role: "employee", position: "Electrician /Site Supervisor", archived: false },
+                { id: 22, name: "Fernando Dulay Jr.", role: "employee", position: "Electrician /Team Leader", archived: false },
+                { id: 23, name: "Rande Sorio", role: "employee", position: "Skilled Electrician/team leader", archived: false },
+                { id: 24, name: "Rizaldo San Pedro", role: "employee", position: "Paint Supervisor", archived: false },
+                { id: 25, name: "George Pica", role: "employee", position: "Skilled Painter", archived: false },
+                { id: 26, name: "Joraydan Briones", role: "employee", position: "Skilled Painter", archived: false },
+                { id: 27, name: "Jayson Auton", role: "employee", position: "Skilled Painter", archived: false },
+                { id: 28, name: "Ronel Yesan", role: "employee", position: "Skilled Painter", archived: false },
+                { id: 29, name: "Richard Cabiad", role: "employee", position: "Skilled Painter", archived: false },
+                { id: 30, name: "Anabelle Austria", role: "administrator", position: "HR Manager/Admin", archived: false },
+                { id: 31, name: "Milen San Jose", role: "administrator", position: "Purchaser", archived: false }
             ];
 
             // Variables for pagination
@@ -444,7 +315,6 @@ if ($_SESSION["role"] !== 'super_admin') {
             const accountForm = document.getElementById('accountForm');
             const modalTitle = document.getElementById('modalTitle');
             const employeeIdInput = document.getElementById('employeeId');
-            const fullNameInput = document.getElementById('fullName');
             const roleSelect = document.getElementById('roleSelect');
             const positionSelect = document.getElementById('positionSelect');
             const emailInput = document.getElementById('email');
@@ -453,13 +323,15 @@ if ($_SESSION["role"] !== 'super_admin') {
             const passwordNote = document.getElementById('passwordNote');
             const cancelBtn = document.getElementById('cancelBtn');
             const saveBtn = document.getElementById('saveBtn');
-            const cancelDeleteBtn = document.getElementById('cancelDeleteBtn');
-            const confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
+            const cancelArchiveBtn = document.getElementById('cancelArchiveBtn');
+            const confirmArchiveBtn = document.getElementById('confirmArchiveBtn');
             const tabLinks = document.querySelectorAll('.tab');
             const firstNameInput = document.getElementById('firstName');
             const lastNameInput = document.getElementById('lastName');
             const usernameInput = document.getElementById('username');
             const phoneNumberInput = document.getElementById('phoneNumber');
+            const archiveModalTitle = document.getElementById('archiveModalTitle');
+            const archiveConfirmText = document.getElementById('archiveConfirmText');
 
             // Positions for each role
             const positions = {
@@ -521,6 +393,12 @@ if ($_SESSION["role"] !== 'super_admin') {
                 allOption.textContent = 'All Positions';
                 filterDropdown.appendChild(allOption);
 
+                // Add archived option
+                const archivedOption = document.createElement('option');
+                archivedOption.value = 'archived';
+                archivedOption.textContent = 'Archived Accounts';
+                filterDropdown.appendChild(archivedOption);
+
                 // Add the role itself as an option
                 if (role === 'employee') {
                     const employeeOption = document.createElement('option');
@@ -561,6 +439,7 @@ if ($_SESSION["role"] !== 'super_admin') {
 
                     // Then filter by dropdown selection
                     const matchesFilter = filterValue === 'all' ||
+                        (filterValue === 'archived' && employee.archived) ||
                         employee.role === filterValue ||
                         employee.position === filterValue;
 
@@ -597,25 +476,25 @@ if ($_SESSION["role"] !== 'super_admin') {
                     // Create rows for current page data
                     currentPageData.forEach(employee => {
                         const row = document.createElement('div');
-                        row.className = 'table-row';
+                        row.className = `table-row ${employee.archived ? 'archived' : ''}`;
                         row.innerHTML = `
-                    <div class="row-item employee-id">${employee.id}</div>
-                    <div class="row-item employee-name">${employee.name}</div>
-                    <div class="row-item role">${employee.role === 'administrator' ? 'Admin' : 'Employee'}</div>
-                    <div class="row-item position">${employee.position}</div>
-                    <div class="row-item actions">
-                        <button class="action-btn edit-btn" data-id="${employee.id}">
-                            <i class="fas fa-user-edit"></i> Edit
-                        </button>
-                        <button class="action-btn delete-btn" data-id="${employee.id}">
-                            <i class="fas fa-trash"></i> Delete
-                        </button>
-                    </div>
-                `;
+                            <div class="row-item employee-id">${employee.id}</div>
+                            <div class="row-item employee-name">${employee.name} ${employee.archived ? '<span class="archived-badge">Inactive</span>' : ''}</div>
+                            <div class="row-item role">${employee.role === 'administrator' ? 'Admin' : 'Employee'}</div>
+                            <div class="row-item position">${employee.position}</div>
+                            <div class="row-item actions">
+                                <button class="action-btn edit-btn" data-id="${employee.id}">
+                                    <i class="fas fa-user-edit"></i> Edit
+                                </button>
+                                <button class="action-btn ${employee.archived ? 'restore-btn' : 'archive-btn'}" data-id="${employee.id}">
+                                    <i class="fas fa-${employee.archived ? 'undo' : 'archive'}"></i> ${employee.archived ? 'Restore' : 'Inactive'}
+                                </button>
+                            </div>
+                        `;
                         tableContent.appendChild(row);
                     });
 
-                    // Add event listeners for edit and delete buttons
+                    // Add event listeners for edit and archive buttons
                     addActionButtonEventListeners();
                 }
             }
@@ -672,10 +551,10 @@ if ($_SESSION["role"] !== 'super_admin') {
                     });
                 });
 
-                document.querySelectorAll('.delete-btn').forEach(btn => {
+                document.querySelectorAll('.archive-btn, .restore-btn').forEach(btn => {
                     btn.addEventListener('click', () => {
                         const employeeId = btn.getAttribute('data-id');
-                        openDeleteConfirmation(parseInt(employeeId));
+                        openArchiveConfirmation(parseInt(employeeId));
                     });
                 });
             }
@@ -719,10 +598,23 @@ if ($_SESSION["role"] !== 'super_admin') {
                 }
             }
 
-            // Open delete confirmation modal
-            function openDeleteConfirmation(employeeId) {
-                confirmDeleteBtn.setAttribute('data-id', employeeId);
-                confirmModal.style.display = 'flex';
+            // Open archive confirmation modal
+            function openArchiveConfirmation(employeeId) {
+                const employee = employeeData.find(emp => emp.id === employeeId);
+                if (employee) {
+                    if (employee.archived) {
+                        archiveModalTitle.textContent = 'Confirm Restore';
+                        archiveConfirmText.textContent = 'Are you sure you want to restore this account?';
+                        confirmArchiveBtn.textContent = 'Restore';
+                    } else {
+                        archiveModalTitle.textContent = 'Confirm Inactive';
+                        archiveConfirmText.textContent = 'Are you sure you want to change this account to inactive? Inactive accounts can be restored later.';
+                        confirmArchiveBtn.textContent = 'Inactive';
+                    }
+                    
+                    confirmArchiveBtn.setAttribute('data-id', employeeId);
+                    confirmModal.style.display = 'flex';
+                }
             }
 
             // Open add account modal
@@ -776,13 +668,16 @@ if ($_SESSION["role"] !== 'super_admin') {
                     position: position,
                     email: email,
                     username: username,
-                    phoneNumber: phoneNumber
+                    phoneNumber: phoneNumber,
+                    archived: false // New accounts are never archived by default
                 };
 
                 if (isEditMode) {
                     // Update existing employee
                     const index = employeeData.findIndex(emp => emp.id === parseInt(employeeId));
                     if (index !== -1) {
+                        // Preserve the archived status when editing
+                        newEmployee.archived = employeeData[index].archived;
                         employeeData[index] = newEmployee;
                     }
                 } else {
@@ -794,13 +689,13 @@ if ($_SESSION["role"] !== 'super_admin') {
                 displayData();
             }
 
-            // Delete account
-            function deleteAccount() {
-                const employeeId = parseInt(confirmDeleteBtn.getAttribute('data-id'));
+            // Toggle archive status
+            function toggleArchiveStatus() {
+                const employeeId = parseInt(confirmArchiveBtn.getAttribute('data-id'));
                 const index = employeeData.findIndex(emp => emp.id === employeeId);
 
                 if (index !== -1) {
-                    employeeData.splice(index, 1);
+                    employeeData[index].archived = !employeeData[index].archived;
                     displayData();
                 }
 
@@ -901,8 +796,8 @@ if ($_SESSION["role"] !== 'super_admin') {
                 addAccountBtn.addEventListener('click', openAddModal);
                 modalCloseBtn.addEventListener('click', closeModals);
                 cancelBtn.addEventListener('click', closeModals);
-                cancelDeleteBtn.addEventListener('click', closeModals);
-                confirmDeleteBtn.addEventListener('click', deleteAccount);
+                cancelArchiveBtn.addEventListener('click', closeModals);
+                confirmArchiveBtn.addEventListener('click', toggleArchiveStatus);
                 accountForm.addEventListener('submit', saveAccount);
 
                 // Role select change

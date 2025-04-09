@@ -242,7 +242,7 @@ if ($_SESSION["role"] !== 'super_admin') {
             align-items: center;
             font-size: 14px;
             height: 40px;
-            margin-left: 36%;
+            margin-left: 35%;
             margin-top: 15px;
         }
 

@@ -202,7 +202,7 @@ if ($_SESSION["role"] !== 'super_admin') {
             align-items: center;
             font-size: 14px;
             height: 40px;
-            margin-left: 124%;
+            margin-left: 119%;
             white-space: nowrap;
         }
 
@@ -350,7 +350,7 @@ if ($_SESSION["role"] !== 'super_admin') {
                     <option value="machines">Machines</option>
                 </select>
                 <button class="new-btn" id="newOrderBtn">
-                    <span style="font-size: 18px;">+</span> New Order
+                    <span style="font-size: 18px;">+</span> New Materials
                 </button>
             </div>
 
